@@ -17,12 +17,14 @@ namespace WebApplication1.Data.Contexts
 {
     public class SnappetContext : DbContext, ISnappetContext
     {
-        public SnappetContext(DbContextOptions dbContextOptions, int maxNrItems = 10000000) : base(dbContextOptions)
+        public SnappetContext(DbContextOptions dbContextOptions, string jsonAsString = "", int maxNrItems = 10000000) : base(dbContextOptions)
         {
-            //helaas nog geen Seed() ook in EF7, dus maar ff met het handje, omdat ik geen SQLServer instance heb op mijn home PC (en deployment en demo een stuk moeilijker wordt...)
+            //notes:
+            // - jsonAsString even snel toegevoegd aan constructor, om tests snel mogelijk te maken
+            // - helaas nog geen Seed() ook in EF7, dus maar ff manual vullen (zodat ik gewoon InMemory kan gebruiken)
             //https://github.com/aspnet/EntityFramework/issues/629
 
-            ConvertJsonToDbContext(this, maxNrItems);
+            ConvertJsonToDbContext(maxNrItems, jsonAsString);
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -41,22 +43,17 @@ namespace WebApplication1.Data.Contexts
             modelBuilder.Entity<Exercise>().HasMany<Answer>().WithOne(x => x.Exercise).HasForeignKey(x => x.SourceId); //todo: check Fk?
 
             //modelBuilder.Entity<Answer>().HasOne(answer => answer.Student).WithOne(y => y.);
-
             //modelBuilder.Entity<Answer>().HasRequired(answer => answer.Exercise).WithMany(exercise => exercise.Answers).HasForeignKey(answer => answer.ExerciseId);
         }
 
-        private void ConvertJsonToDbContext(SnappetContext context, int maxNrItems)
+        private void ConvertJsonToDbContext(int maxNrItems, string jsonAsString = "")
         {
-            //todo: get resource from another location. I want to use an Embedded Resource now because it gets the job done
-            //todo: doesnt work with VSO build agent grr
-            //var resourceAsByteArray = Properties.Resources.work; //geen moeilijke dingen, we weten waar de file staat en wat de content is dus no nonsense here.
-
+            //geen moeilijke dingen, we weten waar de file staat en wat de content is dus no nonsense here.
             var assembly = Assembly.GetCallingAssembly();
-            
             var resourceName = "WebApplication1.Data.DataSource.work.json";
-
-            using (Stream stream = assembly.GetManifestResourceStream(resourceName))
-            using (StreamReader reader = new StreamReader(stream))
+            
+            //decide what baseclass reader to get (if Test or Web mode), making sure VSO agent builds and tests correctly...
+            TextReader reader = string.IsNullOrEmpty(jsonAsString) ? new StreamReader(assembly.GetManifestResourceStream(resourceName)) : reader = new StringReader(jsonAsString);
             using (JsonTextReader jsonReader = new JsonTextReader(reader))
             {
                 var itemsToInsert = new List<Student_Answer>();
@@ -89,15 +86,13 @@ namespace WebApplication1.Data.Contexts
                         }
                     }
 
-                    context.DeleteAll<Student_Answer>(); //inMemory DB issue fix; gooi gewoon alles weg :)
-                    context.StudentAnswers.AddRange(itemsToInsert);
+                    this.DeleteAllAndSave<Student_Answer>(); //inMemory DB issue fix bij alwaysup VSTestEngine; gooi gewoon alles weg :')
+                    StudentAnswers.AddRange(itemsToInsert);
                 }
 
-                context.SaveChanges(); //SaveChanges() also needed for InMemory Provider, to make the properties able to navigate 
+                SaveChanges(); //also needed for InMemory Provider
 
-                SnappetCustomSeeder seeder = new SnappetCustomSeeder(ref context); //seed data based on the Student_Answer
-
-
+                SnappetCustomSeeder seeder = new SnappetCustomSeeder(this); //seed data based on the Student_Answer
             }
         }
 
@@ -109,9 +104,6 @@ namespace WebApplication1.Data.Contexts
         public DbSet<Exercise> Exercises { get; set; }
         public DbSet<Answer> Answers { get; set; }
         public DbSet<Objective> Objectives { get; set; }
-
-
-
 
     }
 }

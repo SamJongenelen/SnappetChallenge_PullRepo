@@ -160,6 +160,9 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <None Include="DataSource\work.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

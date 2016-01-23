@@ -13,10 +13,11 @@ namespace WebApplication1.Data.DataSource
         private ISnappetContext _context;
         private Random _random = new Random();
 
-        public SnappetCustomSeeder(ref SnappetContext context)
+        public SnappetCustomSeeder(SnappetContext context)
         {
             _context = context;
 
+            #region todo paralell
             //todo: werkt niet; context opbouwen parallel geeft array exception. known issue :)
             //var tasks = new List<Task>();
             //tasks.Add(Task.Factory.StartNew(() => _context.Students.AddRange(GetStudents())));
@@ -25,6 +26,7 @@ namespace WebApplication1.Data.DataSource
             //tasks.Add(Task.Factory.StartNew(() => context.Subjects.AddRange(GetSubjects())));
             //tasks.Add(Task.Factory.StartNew(() => _context.Exercises.AddRange(GetExercises())));
             //Task.WaitAll();
+            #endregion 
 
             //Create other entities based on the studnert answer koppeltabel:
             _context.Students.AddRange(GetStudents());
@@ -45,7 +47,7 @@ namespace WebApplication1.Data.DataSource
             _context.Answers.AddRange(GetAnswers());
 
             _context.SaveChanges();
-           // TODO: refactor zodat saveChanges niet telkens called hoeft te worden, haha (DI de context?)
+            // TODO: refactor zodat saveChanges niet telkens called hoeft te worden, haha (inject de context?)
         }
 
         private List<Student> GetStudents()

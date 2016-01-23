@@ -51,12 +51,13 @@ namespace Microsoft.Data.Entity.Extensions
             return query.FirstOrDefault();
         }
 
-        public static void DeleteAll<T>(this DbContext context) where T : BaseEntity
+        public static void DeleteAllAndSave<T>(this DbContext context) where T : BaseEntity
         {
             foreach (var p in context.Set<T>())
             {
                 context.Entry(p).State = EntityState.Deleted;
             }
+            context.SaveChanges();
         }
     }
 }

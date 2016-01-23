@@ -15,9 +15,9 @@ namespace WebApplication1.Tests.Data
     /// Summary description for UnitTest1
     /// </summary>
     [TestClass]
-    public class DbContextTests
+    public class DbContextTest
     {
-        public DbContextTests()
+        public DbContextTest()
         {
             //
             // TODO: Add constructor logic here
@@ -45,12 +45,17 @@ namespace WebApplication1.Tests.Data
         }
 
         [TestInitialize]
+        [DeploymentItem("DataSource\\work.json")]
         public void CreateContext()
         {
+
+            string jsonAsString = System.IO.File.ReadAllText("DataSource\\work.json");
+            
+
             var optionsBuilder = new DbContextOptionsBuilder<SnappetContext>();
             optionsBuilder.UseInMemoryDatabase();
 
-            _context = new SnappetContext(optionsBuilder.Options, 1000);
+            _context = new SnappetContext(optionsBuilder.Options, jsonAsString, 1000);
         }
 
         [TestMethod]
