@@ -141,14 +141,14 @@
   <ItemGroup>
     <None Include="App.config" />
     <Compile Include="Contexts\SnappetContext.cs" />
-    <Resource Include="DataSource\work.json">
+    <None Include="DataSource\work.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>

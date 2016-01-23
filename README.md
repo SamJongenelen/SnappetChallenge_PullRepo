@@ -4,7 +4,7 @@
 ***Requirements***
 
 - Het project is geconfigureerd om Local IIS te draaien. 
-- Visual Studio 2015, of iig .net framework 4.6 ``(let op compiler versie, ik gebruik c# 6.0 syntax operators (nameof(), string helpers))``;
+- Visual Studio 2015, of iig .net framework 4.6 ``(let op compiler/MSBuild versie, ik gebruik c# 6.0 syntax operators (nameof(), string helpers)  en dus 14.0 required)``;
 - Front end is een ASPNET MVC Project (csproj WebApplication1)
  *  Project bevat zowel Controllers voor posten/get als Razor Views 
 - NuGet door onder andere EF, jQUery & Bootstrap. Gebruik evt 'nuget.exe restore contoso.sln', of gewoon VS :)
