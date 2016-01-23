@@ -51,7 +51,7 @@ namespace WebApplication1.Data.Contexts
             //todo: doesnt work with VSO build agent grr
             //var resourceAsByteArray = Properties.Resources.work; //geen moeilijke dingen, we weten waar de file staat en wat de content is dus no nonsense here.
 
-            var assembly = Assembly.GetExecutingAssembly();
+            var assembly = Assembly.GetCallingAssembly();
             
             var resourceName = "WebApplication1.Data.DataSource.work.json";
 
