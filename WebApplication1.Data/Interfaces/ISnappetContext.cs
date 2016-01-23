@@ -1,5 +1,5 @@
 ﻿using Microsoft.Data.Entity;
-using System.Data.Entity.Infrastructure;
+using Microsoft.Data.Entity.Infrastructure;
 using WebApplication1.Data.Entities;
 using WebApplication1.Data.Entities.Base;
 
@@ -24,10 +24,7 @@ namespace WebApplication1.Data.Interfaces
     public interface IDbContext
     {
         DbSet<T> Set<T>() where T : class;
-        DbEntityEntry<T> Entry<T>(T entity) where T : class;
-
         int SaveChanges();
         void Dispose();
-
     }
 }

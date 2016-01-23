@@ -3,7 +3,6 @@ using WebApplication1.Data.Entities;
 using Microsoft.Data.Entity;
 using System;
 using Microsoft.Data.Entity.Infrastructure;
-using System.Data.Entity.Infrastructure;
 using Newtonsoft.Json;
 using System.IO;
 using Newtonsoft.Json.Linq;
@@ -113,11 +112,5 @@ namespace WebApplication1.Data.Contexts
 
 
 
-
-        //todo: check Entry()
-        DbEntityEntry<T> IDbContext.Entry<T>(T entity)
-        {
-            throw new NotImplementedException();
-        }
     }
 }
