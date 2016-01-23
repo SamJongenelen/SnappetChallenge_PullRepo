@@ -9,7 +9,9 @@ namespace WebApplication1.Data.Entities
         public DateTime SubmitDateTime { get; set; }
         public bool Correct { get; set; }
         public int Progress { get; set; }
+
         public long UserId { get; set; }
+
         public long ExerciseId { get; set; }
         public double? Difficulty { get; set; }
         public string Subject { get; set; }

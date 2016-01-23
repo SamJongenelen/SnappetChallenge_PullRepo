@@ -1,4 +1,7 @@
-﻿using System.Data.Entity;
+﻿using Microsoft.Data.Entity;
+using Microsoft.Data.Entity.Extensions;
+using System.Linq;
+using WebApplication1.Data.Entities;
 using WebApplication1.Data.Entities.Base;
 using WebApplication1.Data.Interfaces;
 
@@ -17,10 +20,17 @@ namespace WebApplication1.Data.Contexts
             _dbSet = context.Set<T>();
         }
 
-        public virtual T GetById(object id)
+        public virtual T GetById(long id)
         {
-            return _dbSet.Find(id);
+            return _dbSet.FirstOrDefault(x => x.Id == id);
         }
+
+        public virtual T GetBySourceId(long id)
+        {
+            return _dbSet.FirstOrDefault(x => x.Id == id);
+        }
+
+        //1038396
 
         public virtual void Insert(T entity)
         {

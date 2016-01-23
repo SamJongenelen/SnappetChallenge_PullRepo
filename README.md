@@ -19,7 +19,6 @@ http://webapplicationsnappet.azurewebsites.net/
 Gekoppeld aan de Snappet GIT branch met CI. Indien CI slaagt wordt Release gestart. _Zie onderstaand_
 
 
-
 ** Process management met TFS demo **
 
 Voor een demo van mijn Team Foundation Services (voorheen VSO) account setup kan ik je uitnodigen in mijn 'team'; zodat je mijn CI builds en Continious integration setup kunt zien.
@@ -31,11 +30,13 @@ Ik heb voor de grap gewerkt met een TFS backlog en work items, om zo ook te kijk
 
 Dan nu verder over de code; 
 
-De sln bestaat uit 3 projects; een UnitTest project, om aan te geven dat testen belangrijk is 
+De SLN bestaat uit 3 projects; 
+-- Een view laag in de vorm van een web project
+-- Een data laag in de vorm van een assembly 
+-- Een UnitTest project, om aan te geven dat testen belangrijk is en om de conversie JSON -> Entities te checken 
 
 
-
-Data laag is een EF 6.1.3 code first approach, zonder database achter de context, zodat deployment wat makkelijker gaat.
+Data laag is een EF ~~6.1.3~~ 7.0 code first approach, zonder database achter de context, maar met een InMemory provider, zodat deployment wat makkelijker gaat. 
 -- Ook heeft mijn Azure account helaas net niet genoeg credits om een WebApp + SQL Server instance te draaien :)
 
 
