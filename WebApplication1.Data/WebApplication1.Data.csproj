@@ -142,7 +142,7 @@
     <None Include="App.config" />
     <Compile Include="Contexts\SnappetContext.cs" />
     <EmbeddedResource Include="DataSource\work.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
     <None Include="packages.config" />
   </ItemGroup>
