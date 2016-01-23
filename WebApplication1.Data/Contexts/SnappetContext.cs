@@ -12,6 +12,7 @@ using System.Linq;
 using WebApplication1.Data.DataSource;
 using WebApplication1.Data.Entities.Base;
 using Microsoft.Data.Entity.Extensions;
+using System.Reflection;
 
 namespace WebApplication1.Data.Contexts
 {
@@ -48,9 +49,13 @@ namespace WebApplication1.Data.Contexts
         private void ConvertJsonToDbContext(SnappetContext context, int maxNrItems)
         {
             //todo: get resource from another location. I want to use an Embedded Resource now because it gets the job done
-            var resourceAsByteArray = Properties.Resources.work; //geen moeilijke dingen, we weten waar de file staat en wat de content is dus no nonsense here.
+            //todo: doesnt work with VSO build agent grr
+            //var resourceAsByteArray = Properties.Resources.work; //geen moeilijke dingen, we weten waar de file staat en wat de content is dus no nonsense here.
 
-            using (MemoryStream stream = new MemoryStream(resourceAsByteArray))
+            var assembly = Assembly.GetExecutingAssembly();
+            var resourceName = "WebApplication1.Data.DataSource.work.json";
+
+            using (Stream stream = assembly.GetManifestResourceStream(resourceName))
             using (StreamReader reader = new StreamReader(stream))
             using (JsonTextReader jsonReader = new JsonTextReader(reader))
             {

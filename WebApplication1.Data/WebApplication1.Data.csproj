@@ -141,9 +141,7 @@
   <ItemGroup>
     <None Include="App.config" />
     <Compile Include="Contexts\SnappetContext.cs" />
-    <None Include="DataSource\work.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    <EmbeddedResource Include="DataSource\work.json" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

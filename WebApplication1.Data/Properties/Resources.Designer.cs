@@ -59,15 +59,5 @@ namespace WebApplication1.Data.Properties {
                 resourceCulture = value;
             }
         }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
-        public static byte[] work {
-            get {
-                object obj = ResourceManager.GetObject("work", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
     }
 }
