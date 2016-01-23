@@ -52,6 +52,7 @@ namespace WebApplication1.Data.Contexts
             //var resourceAsByteArray = Properties.Resources.work; //geen moeilijke dingen, we weten waar de file staat en wat de content is dus no nonsense here.
 
             var assembly = Assembly.GetExecutingAssembly();
+            
             var resourceName = "WebApplication1.Data.DataSource.work.json";
 
             using (Stream stream = assembly.GetManifestResourceStream(resourceName))
