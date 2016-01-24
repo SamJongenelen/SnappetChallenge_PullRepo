@@ -21,18 +21,19 @@ namespace WebApplication1.Data.Contexts
             set { }
         }
 
-        public SnappetContext(string _jsonAsString = "", int maxNrItems = 10000) : this(DbContextOptions, _jsonAsString, maxNrItems) { }
+        public SnappetContext(string _jsonAsString = "", int maxNrItems = 1000) : this(DbContextOptions, _jsonAsString) { }
 
-        public SnappetContext(DbContextOptions dbContextOptions, string jsonAsString = "", int maxNrItems = 10000000) : base(dbContextOptions)
+        public SnappetContext(DbContextOptions dbContextOptions, string jsonAsString = "") : base(dbContextOptions)
         {
             //notes:
             // - jsonAsString even snel toegevoegd aan constructor, om tests snel mogelijk te maken
             // - helaas nog geen Seed() ook in EF7, dus maar ff manual vullen met een static seeder (zodat ik gewoon InMemory provider kan gebruiken)
             // zie https://github.com/aspnet/EntityFramework/issues/629
 #if DEBUG
-            maxNrItems = 1000;
-#endif
-            SnappetSeeder.Seed(this, maxNrItems, jsonAsString);
+            SnappetSeeder.Seed(this, 1000, jsonAsString);
+#else
+            SnappetSeeder.Seed(this, 1000, jsonAsString); //todo: increase for production
+#endif 
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
