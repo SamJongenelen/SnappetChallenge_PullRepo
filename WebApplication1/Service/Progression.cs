@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json.Linq;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Web.Http;
 using WebApplication1.Models;
@@ -11,42 +10,26 @@ namespace WebApplication1.Services
     {
         [HttpGet]
         public object GetAllProgress()
-        //public object GetAllProgress(int sEcho,
-        //int iDisplayStart,
-        //int iDisplayLength,
-        //string sSearch,
-        //int iSortCol_0,
-        //string sSortDir_0)
         {
-
+            //note: working stubdata:
             //var bla = "{                 \"sEcho\": 3,     \"iTotalRecords\": 57,     \"iTotalDisplayRecords\": 57,     \"aaData\": [         {             \"DT_RowId\": \"row_7\",             \"DT_RowClass\": \"gradeA\",             \"0\": \"Gecko\",             \"1\": \"Firefox 1.0\",             \"2\": \"Win 98+ / OSX.2+\",             \"3\": \"1.7\",             \"4\": \"A\"         },         {             \"DT_RowId\": \"row_8\",             \"DT_RowClass\": \"gradeA\",             \"0\": \"Gecko\",             \"1\": \"Firefox 1.5\",             \"2\": \"Win 98+ / OSX.2+\",             \"3\": \"1.8\",             \"4\": \"A\"         }            ] }";
             //JObject json = JObject.Parse(bla);
             //return json;
-
-
-
-
-
+            
             var dt = new DateTime(2015, 3, 24, 11, 30, 0);
             DateTime dateTimeEnd = DateTime.SpecifyKind(dt, DateTimeKind.Utc);
             DateTime dateTimeStart = DateTime.SpecifyKind(dt.AddDays(-7), DateTimeKind.Utc);
 
             var model = ProgressBetween(dateTimeStart, dateTimeEnd);
-            //return model;
-
 
             var dtr = new DataTableResult<Progress>();
-
             dtr.aaData = model;
             dtr.sEcho = 3;
             dtr.iTotalRecords = model.Count;
             dtr.iTotalDisplayRecords = 2;
 
             return dtr;
-
-
         }
-
 
         public List<Progress> ProgressBetween(DateTime dateStart, DateTime dkateEnd)
         {
