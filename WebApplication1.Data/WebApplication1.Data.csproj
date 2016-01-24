@@ -112,13 +112,8 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
-    <Reference Include="Z.EntityFramework.Plus.EF7, Version=0.0.10.0, Culture=neutral, PublicKeyToken=59b66d028979105b, processorArchitecture=MSIL">
-      <HintPath>..\packages\Z.EntityFramework.Plus.EF7.0.0.10-alpha10\lib\Z.EntityFramework.Plus.EF7.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DataSource\SnappetSeeder.cs" />
     <Compile Include="Interfaces\ISnappetContext.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -138,6 +133,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+	<Compile Include="DataSource\SnappetSeeder.cs" />
     <Compile Include="Contexts\SnappetContext.cs" />
     <EmbeddedResource Include="DataSource\work.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
