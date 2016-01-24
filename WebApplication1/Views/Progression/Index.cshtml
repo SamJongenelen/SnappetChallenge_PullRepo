@@ -1,0 +1,42 @@
+﻿@{
+    ViewBag.Title = "Progression Page";
+}
+
+@model WebApplication1.Models.Progress
+
+<div>
+    <h2>Progression</h2>
+    <ul id="products" />
+</div>
+
+
+@Scripts.Render("~/bundles/jquery")
+
+<script>
+    var uri = 'api/progress';
+
+    $(document).ready(function () {
+        $.getJSON(uri)
+            .done(function (data) {
+                $.each(data, function (key, item) {
+                    $('<li>', { text: formatItem(item) }).appendTo($('#products'));
+                });
+            });
+    });
+
+    function formatItem(item) {
+        //return item.Name + ': $' + item.Price;
+        return 'test';
+    }
+
+    function find() {
+        var id = $('#prodId').val();
+        $.getJSON(uri)
+            .done(function (data) {
+                $('#product').text(formatItem(data));
+            })
+            .fail(function (jqXHR, textStatus, err) {
+                $('#product').text('Error: ' + err);
+            });
+    }
+</script>

@@ -42,14 +42,8 @@ namespace WebApplication1.Tests.Data
         [DeploymentItem("DataSource\\work.json")]
         public static void ClassInitialize(TestContext testContext)
         {
-            //TestContext = TestContext;
-
             _jsonAsString = File.ReadAllText("DataSource\\work.json");
-
-            var optionsBuilder = new DbContextOptionsBuilder<SnappetContext>();
-            optionsBuilder.UseInMemoryDatabase();
-
-            _context = new SnappetContext(optionsBuilder.Options, _jsonAsString, 1000);
+            _context = new SnappetContext(_jsonAsString, 1000);
         }
 
         [ClassCleanup]
@@ -127,7 +121,6 @@ namespace WebApplication1.Tests.Data
             Assert.IsNotNull(exercise.Subject);
         }
 
-
         //test navigationals EF:
         [TestMethod]
         public void WHEN_COntext_is_loaded_ALL_navigational_properties_work()
@@ -183,6 +176,19 @@ namespace WebApplication1.Tests.Data
 
             //ASSERT
             Assert.AreNotEqual(0, a.Exercise);
+        }
+
+        [TestMethod]
+        public void Exercise_HAS_student()
+        {
+            //ARRANGE 
+            var repo = new SnappetRepository<Exercise>(_context);
+
+            //ACT 
+            var a = _context.Students.First();
+
+            //ASSERT
+            Assert.IsNotNull(a);
         }
 
         [TestMethod]

@@ -1,0 +1,64 @@
+{
+  "userSecretsId": "WebApplication1.MVC6Web-8ed8d23b-8cd9-423f-a5e2-bfb15e66c195",
+  "version": "1.0.0-*",
+
+    "dependencies": {
+        "Boilerplate.Web.Mvc6": "2.0.0-rc1-final-3",
+        "Boilerplate.Web.Mvc6.TagHelpers": "2.0.0-rc1-final-3",
+        "EntityFramework.Commands": "7.0.0-rc1-final",
+        "EntityFramework.Core": "7.0.0-rc1-final",
+        "Microsoft.AspNet.CookiePolicy": "1.0.0-rc1-final",
+        "Microsoft.AspNet.Diagnostics": "1.0.0-rc1-final",
+        "Microsoft.AspNet.IISPlatformHandler": "1.0.0-rc1-final",
+        "Microsoft.AspNet.Mvc": "6.0.0-rc1-final",
+        "Microsoft.AspNet.Mvc.TagHelpers": "6.0.0-rc1-final",
+        "Microsoft.AspNet.Server.Kestrel": "1.0.0-rc1-final",
+        "Microsoft.AspNet.StaticFiles": "1.0.0-rc1-final",
+        "Microsoft.AspNet.Tooling.Razor": "1.0.0-rc1-final",
+        "Microsoft.Extensions.Configuration.EnvironmentVariables": "1.0.0-rc1-final",
+        "Microsoft.Extensions.Configuration.Json": "1.0.0-rc1-final",
+        "Microsoft.Extensions.Configuration.UserSecrets": "1.0.0-rc1-final",
+        "Microsoft.Extensions.Logging": "1.0.0-rc1-final",
+        "Microsoft.Extensions.Logging.Console": "1.0.0-rc1-final",
+        "Microsoft.Extensions.Logging.Debug": "1.0.0-rc1-final",
+        "Microsoft.VisualStudio.Web.BrowserLink.Loader": "14.0.0-rc1-final",
+        "Newtonsoft.Json": "7.0.1"
+    },
+
+  "commands": {
+    "web": "Microsoft.AspNet.Server.Kestrel"
+  },
+
+  "compilationOptions": {
+    "emitEntryPoint": true
+  },
+
+  "frameworks": {
+    "dnx451": {
+      "frameworkAssemblies": {
+        "System.Net.Http": "4.0.0.0"
+      }
+    },
+    "dnxcore50": {
+      "dependencies": {
+        "System.Net.Http": "4.0.1-beta-23516"
+      }
+    }
+  },
+
+  "exclude": [
+    "wwwroot",
+    "node_modules",
+    "bower_components"
+  ],
+  "publishExclude": [
+    "node_modules",
+    "bower_components",
+    "**.xproj",
+    "**.user",
+    "**.vspscc"
+  ],
+  "scripts": {
+    "prepublish": [ "npm install", "bower install", "gulp build" ]
+  }
+}
