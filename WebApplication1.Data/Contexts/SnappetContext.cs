@@ -32,7 +32,7 @@ namespace WebApplication1.Data.Contexts
 #if DEBUG
             maxNrItems = 1000;
 #endif
-            SnappetSeeder2.Seed(this, maxNrItems, jsonAsString);
+            SnappetSeeder.Seed(this, maxNrItems, jsonAsString);
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

@@ -14,7 +14,7 @@ using WebApplication1.Data.Interfaces;
 
 namespace WebApplication1.Data.DataSource
 {
-    public static class SnappetSeeder2
+    public static class SnappetSeeder
     {
         private const int _iterationSize = 1000;
         private static ISnappetContext _context;
