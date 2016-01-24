@@ -26,7 +26,7 @@ namespace WebApplication1.Data.DataSource
             //tasks.Add(Task.Factory.StartNew(() => context.Subjects.AddRange(GetSubjects())));
             //tasks.Add(Task.Factory.StartNew(() => _context.Exercises.AddRange(GetExercises())));
             //Task.WaitAll();
-            #endregion 
+            #endregion
 
             //Create other entities based on the studnert answer koppeltabel:
             _context.Students.AddRange(GetStudents());
@@ -48,6 +48,7 @@ namespace WebApplication1.Data.DataSource
 
             _context.SaveChanges();
             // TODO: refactor zodat saveChanges niet telkens called hoeft te worden, haha (inject de context?)
+
         }
 
         private List<Student> GetStudents()
@@ -69,28 +70,22 @@ namespace WebApplication1.Data.DataSource
             var answers = new List<Answer>();
             var distinctAnswers = _context.StudentAnswers.Select(a => new { a.ExerciseId, a.UserId, a.Correct, a.SubmitDateTime, a.SubmittedAnswerId, a.Progress }).Distinct();
 
-            var totalAnswers = distinctAnswers.Count();
-            var batchSize = 1000;
-            var nrBatches = Math.Ceiling((double)totalAnswers / batchSize);
-
             //genereer een hoop answers en koppel ze 
-            for (var batch = 0; batch < nrBatches; batch++)
+            foreach (var answer in distinctAnswers.OrderBy(a => a.SubmittedAnswerId))
             {
-                foreach (var answer in distinctAnswers.OrderBy(a => a.SubmittedAnswerId).Skip(batch * batchSize).Take(batchSize))
+                var generatedAnswer = new Answer
                 {
-                    var generatedAnswer = new Answer
-                    {
-                        DateAdded = DateTime.Now,
-                        Correct = answer.Correct,
-                        Exercise = _context.Exercises.FirstOrDefault(e => e.Id == answer.ExerciseId),
-                        Progress = answer.Progress,
-                        Id = answer.SubmittedAnswerId,
-                        Student = _context.Students.FirstOrDefault(s => s.Id == answer.UserId),
-                        SubmitDateTime = answer.SubmitDateTime
-                    };
-                    answers.Add(generatedAnswer);
-                }
+                    DateAdded = DateTime.Now,
+                    Correct = answer.Correct,
+                    Exercise = _context.Exercises.FirstOrDefault(e => e.ExerciseId == answer.ExerciseId),
+                    Progress = answer.Progress,
+                    Id = answer.SubmittedAnswerId,
+                    Student = _context.Students.FirstOrDefault(s => s.Id == answer.UserId),
+                    SubmitDateTime = answer.SubmitDateTime
+                };
+                answers.Add(generatedAnswer);
             }
+
 
             return answers;
         }
@@ -167,7 +162,7 @@ namespace WebApplication1.Data.DataSource
                     Difficulty = exercise.Difficulty ?? 0,
                     Domain = _context.Domains.FirstOrDefault(d => d.DomainName == exercise.Domain),
                     Objective = _context.Objectives.FirstOrDefault(o => o.LearningObjective == exercise.LearningObjective),
-                    SourceId = exercise.ExerciseId,
+                    ExerciseId = exercise.ExerciseId,
                     Subject = _context.Subjects.FirstOrDefault(s => s.Name == exercise.Subject) // name != key dus kan fouten veroorzaken, misschien SIngle() pakken?
                 };
                 exercises.Add(e);

@@ -1,7 +1,5 @@
 ﻿using Microsoft.Data.Entity;
-using Microsoft.Data.Entity.Infrastructure;
 using WebApplication1.Data.Entities;
-using WebApplication1.Data.Entities.Base;
 
 namespace WebApplication1.Data.Interfaces
 {

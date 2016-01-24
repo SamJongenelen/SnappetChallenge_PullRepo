@@ -7,9 +7,7 @@ using Newtonsoft.Json;
 using System.IO;
 using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
-using System.Linq;
 using WebApplication1.Data.DataSource;
-using WebApplication1.Data.Entities.Base;
 using Microsoft.Data.Entity.Extensions;
 using System.Reflection;
 
@@ -21,7 +19,7 @@ namespace WebApplication1.Data.Contexts
         {
             //notes:
             // - jsonAsString even snel toegevoegd aan constructor, om tests snel mogelijk te maken
-            // - helaas nog geen Seed() ook in EF7, dus maar ff manual vullen (zodat ik gewoon InMemory kan gebruiken)
+            // - helaas nog geen Seed() ook in EF7, dus maar ff manual vullen (zodat ik gewoon InMemory provider kan gebruiken)
             //https://github.com/aspnet/EntityFramework/issues/629
 
             ConvertJsonToDbContext(maxNrItems, jsonAsString);
@@ -31,19 +29,12 @@ namespace WebApplication1.Data.Contexts
         {
             base.OnModelCreating(modelBuilder);
 
-            //Fluent mappings: (data annotations met FK en many to many is lastig en fluent is de way to go volgens hanselman
-            modelBuilder.Entity<Student>().HasMany<Answer>().WithOne(x => x.Student);
-
+            //EF7 Fluent mappings: (data annotations met FK en many to many is lastig en fluent is the way to go volgens hanselman)
+                      
             modelBuilder.Entity<Answer>().HasOne<Student>().WithMany(x => x.Answers);
             modelBuilder.Entity<Answer>().HasOne(x => x.Student).WithMany(ex => ex.Answers).HasForeignKey(answer => answer.ExerciseId);
 
-            //Exercise:
-            modelBuilder.Entity<Exercise>().HasOne<Subject>().WithMany(x => x.Exercises);
-            modelBuilder.Entity<Exercise>().HasOne<Objective>().WithMany(x => x.Exercises);
-            modelBuilder.Entity<Exercise>().HasMany<Answer>().WithOne(x => x.Exercise).HasForeignKey(x => x.SourceId); //todo: check Fk?
-
-            //modelBuilder.Entity<Answer>().HasOne(answer => answer.Student).WithOne(y => y.);
-            //modelBuilder.Entity<Answer>().HasRequired(answer => answer.Exercise).WithMany(exercise => exercise.Answers).HasForeignKey(answer => answer.ExerciseId);
+           
         }
 
         private void ConvertJsonToDbContext(int maxNrItems, string jsonAsString = "")
@@ -51,7 +42,7 @@ namespace WebApplication1.Data.Contexts
             //geen moeilijke dingen, we weten waar de file staat en wat de content is dus no nonsense here.
             var assembly = Assembly.GetCallingAssembly();
             var resourceName = "WebApplication1.Data.DataSource.work.json";
-            
+
             //decide what baseclass reader to get (if Test or Web mode), making sure VSO agent builds and tests correctly...
             TextReader reader = string.IsNullOrEmpty(jsonAsString) ? new StreamReader(assembly.GetManifestResourceStream(resourceName)) : reader = new StringReader(jsonAsString);
             using (JsonTextReader jsonReader = new JsonTextReader(reader))
