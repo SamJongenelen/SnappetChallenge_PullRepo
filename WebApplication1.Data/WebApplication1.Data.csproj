@@ -133,7 +133,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-	<Compile Include="DataSource\SnappetSeeder.cs" />
+    <Compile Include="DataSource\SnappetSeeder2.cs" />
     <Compile Include="Contexts\SnappetContext.cs" />
     <EmbeddedResource Include="DataSource\work.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
