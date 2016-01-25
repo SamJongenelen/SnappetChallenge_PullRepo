@@ -18,12 +18,13 @@
 </div>
 
 @Scripts.Render("~/bundles/jquery")
+
 <script>
     $(document).ready(function () {
         var uri = 'api/progress';
 
         var table = $('#progressList').DataTable({
-            bJQueryUI: true,
+            bJQueryUI: false,
             bProcessing: true,
             sAjaxSource: uri,
             aoColumnDefs: [{ 'bSortable': false }],

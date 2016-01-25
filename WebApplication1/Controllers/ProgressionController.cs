@@ -30,12 +30,13 @@ namespace WebApplication1.Controllers
         public List<StudentProgression> GetProgress(DateTime dateStart, DateTime dkateEnd)
         {
             var answers = Context.Answers; //todo: using or at least dispose?
-            var avgProgress = answers.Average(x => x.Progress);
+            
             var nrAnswers = answers.Count();
-            var numOfCorrectExercises = answers.Count(a => a.Correct);
-            var numOfExercises = answers.Select(x => x.ExerciseId).Distinct().Count();
+            var nrCorrectanswer = answers.Count(a => a.Correct);
+            var nrExercises = answers.Select(x => x.ExerciseId).Distinct().Count();
             var avgDifficulty = answers.Average(a => a.Exercise.Difficulty);
-            var avgCorrectnessRate = (double)numOfCorrectExercises / numOfExercises;
+            var avgCorrectnessRate = (double)nrCorrectanswer / nrExercises;
+            var avgProgress = answers.Average(x => x.Progress);
 
             var students = answers.GroupBy(a => a.Student).Select(a => a.Key).ToList();
             var nrOfStudents = students.Count();

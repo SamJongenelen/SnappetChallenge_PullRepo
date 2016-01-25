@@ -30,7 +30,7 @@ namespace WebApplication1.Data.Contexts
             // - helaas nog geen Seed() ook in EF7, dus maar ff manual vullen met een static seeder (zodat ik gewoon InMemory provider kan gebruiken)
             // zie https://github.com/aspnet/EntityFramework/issues/629
 #if DEBUG
-            SnappetSeeder.Seed(this, 1000, jsonAsString);
+            SnappetSeeder.Seed(this, 1000000, jsonAsString);
 #else
             SnappetSeeder.Seed(this, 1000, jsonAsString); //todo: increase for production
 #endif 
@@ -57,7 +57,7 @@ namespace WebApplication1.Data.Contexts
 
         public void DeleteAllAndSave<T>() where T : BaseEntity
         {
-            foreach (var p in this.Set<T>())
+            foreach (var p in Set<T>())
             {
                 Entry(p).State = EntityState.Deleted;
             }

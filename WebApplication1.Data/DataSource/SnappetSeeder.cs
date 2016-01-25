@@ -7,6 +7,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using WebApplication1.Data.Contexts;
 using WebApplication1.Data.Entities;
@@ -22,33 +24,47 @@ namespace WebApplication1.Data.DataSource
         private static string _jsonAsString;
         private static Stopwatch _sw = new Stopwatch();
         private static int _maxNrItems;
-
+        private static bool _gcLowered;
         public static void Seed(SnappetContext context, int maxNrItems, string jsonAsString = "")
         {
-            if (_context == null)
+            GCLatencyMode oldMode = GCSettings.LatencyMode;
+            RuntimeHelpers.PrepareConstrainedRegions();
+
+
+            if (_context == null) //if context hasnt already been created
             {
-                _context = context;
-                _jsonAsString = jsonAsString;
-                _maxNrItems = maxNrItems;
-                #region todo paralell werkt niet met EF nu, misshcien later
-                //todo: werkt niet; context opbouwen parallel geeft array exception. known issue :)
-                //var tasks = new List<Task>();
-                //tasks.Add(Task.Factory.StartNew(() => _context.Students.AddRange(GetStudents())));
-                //tasks.Add(Task.Factory.StartNew(() => _context.Domains.AddRange(GetDomains())));
-                //tasks.Add(Task.Factory.StartNew(() => _context.Objectives.AddRange(GetObjectives())));
-                //tasks.Add(Task.Factory.StartNew(() => context.Subjects.AddRange(GetSubjects())));
-                //tasks.Add(Task.Factory.StartNew(() => _context.Exercises.AddRange(GetExercises())));
-                //Task.WaitAll();
-                #endregion
+                try
+                {
+                    //var neededMemoryAmount = 10000000;
+                    //_gcLowered = GC.TryStartNoGCRegion(neededMemoryAmount);
+                    GCSettings.LatencyMode = GCLatencyMode.LowLatency;
+                    // Generation 2 garbage collection is now
+                    // deferred, except in extremely low-memory situations
 
-                ConvertJson();
+                    _context = context;
+                    _jsonAsString = jsonAsString;
+                    _maxNrItems = maxNrItems;
 
-                SeedStudents();
-                SeedDomains();
-                SeedObjectives();
-                SeedSubjects();
-                SeedExercises();
-                SeedAnswers();
+                    ConvertJson();
+
+                    SeedStudents();
+                    SeedDomains();
+                    SeedObjectives();
+                    SeedSubjects();
+                    SeedExercises();
+                    SeedAnswers();
+
+                }
+                finally
+                {
+                    if (!_gcLowered)
+                    {
+                        GC.EndNoGCRegion();
+                        GCSettings.LatencyMode = oldMode;
+                    }
+
+
+                }
             }
         }
 
@@ -132,37 +148,6 @@ namespace WebApplication1.Data.DataSource
             Debug.WriteLine($"seeded students in {_sw.ElapsedMilliseconds / 1000 } seconds");
 
         }
-        private static void SeedAnswers()
-        {
-            _sw.Restart();
-            var distinctAnswers = _context.StudentAnswers.Select(a => new { a.ExerciseId, a.UserId, a.Correct, a.SubmitDateTime, a.SubmittedAnswerId, a.Progress }).Distinct();
-            var iterationsNeeded = Math.Ceiling((double)distinctAnswers.Count() / _iterationSize);
-
-            //genereer een hoop answers en koppel ze 
-            for (var iteration = 0; iteration < iterationsNeeded; iteration++)
-            {
-                foreach (var answer in distinctAnswers.OrderBy(a => a.SubmittedAnswerId).Skip(iteration * _iterationSize).Take(_iterationSize))
-                {
-                    var generatedAnswer = new Answer
-                    {
-                        DateAdded = DateTime.Now,
-                        Correct = answer.Correct,
-                        Exercise = _context.Exercises.AsNoTracking().FirstOrDefault(e => e.ExerciseId == answer.ExerciseId),
-                        Progress = answer.Progress,
-                        Id = answer.SubmittedAnswerId,
-                        Student = _context.Students.AsNoTracking().FirstOrDefault(s => s.Id == answer.UserId),
-                        SubmitDateTime = answer.SubmitDateTime
-                    };
-                    _context.Answers.Add(generatedAnswer);
-                }
-                _context.SaveChanges(); //save every n records, because no bulkinsert for EF7 yet :(
-
-            }
-
-            _sw.Stop();
-            Debug.WriteLine($"seeded answers in {_sw.ElapsedMilliseconds / 1000 } seconds");
-
-        }
         private static void SeedDomains()
         {
             _sw.Restart();
@@ -218,11 +203,11 @@ namespace WebApplication1.Data.DataSource
                 {
                     Exercise e = new Exercise()
                     {
+                        ExerciseId = exercise.ExerciseId,
                         DateAdded = DateTime.Now,
                         Difficulty = exercise.Difficulty ?? 0,
                         Domain = _context.Domains.AsNoTracking().FirstOrDefault(d => d.DomainName == exercise.Domain),
                         Objective = _context.Objectives.AsNoTracking().FirstOrDefault(o => o.LearningObjective == exercise.LearningObjective),
-                        ExerciseId = exercise.ExerciseId,
                         Subject = _context.Subjects.AsNoTracking().FirstOrDefault(s => s.Name == exercise.Subject) // name != key dus kan fouten veroorzaken, misschien SIngle() pakken?
                     };
                     _context.Exercises.Add(e);
@@ -230,26 +215,60 @@ namespace WebApplication1.Data.DataSource
                 _context.SaveChanges();
             }
             _sw.Stop();
-            Debug.WriteLine($"seeded exercises in {_sw.ElapsedMilliseconds / 1000 } seconds");
+            Debug.WriteLine($"seeded Exercises in {_sw.ElapsedMilliseconds / 1000 } seconds");
+        }
+        private static void SeedAnswers()
+        {
+            _sw.Restart();
+            var distinctAnswers = _context.StudentAnswers.Select(a => new { a.ExerciseId, a.UserId, a.Correct, a.SubmitDateTime, a.SubmittedAnswerId, a.Progress }).Distinct();
+            var iterationsNeeded = Math.Ceiling((double)distinctAnswers.Count() / _iterationSize);
+
+            //genereer een hoop answers en koppel ze 
+            for (var iteration = 0; iteration < iterationsNeeded; iteration++)
+            {
+                foreach (var answer in distinctAnswers.OrderBy(a => a.SubmittedAnswerId).Skip(iteration * _iterationSize).Take(_iterationSize))
+                {
+                    var generatedAnswer = new Answer
+                    {
+                        DateAdded = DateTime.Now,
+                        Correct = answer.Correct,
+                        Exercise = _context.Exercises.AsNoTracking().FirstOrDefault(e => e.ExerciseId == answer.ExerciseId),
+                        Progress = answer.Progress,
+                        Id = answer.SubmittedAnswerId,
+                        Student = _context.Students.AsNoTracking().FirstOrDefault(s => s.Id == answer.UserId),
+                        SubmitDateTime = answer.SubmitDateTime
+                    };
+                    _context.Answers.Add(generatedAnswer);
+                }
+                _context.SaveChanges(); //save every n records, because no bulkinsert for EF7 yet :(
+            }
+
+            _sw.Stop();
+            Debug.WriteLine($"seeded answers in {_sw.ElapsedMilliseconds / 1000 } seconds");
         }
 
         private static string GetStudentName(long id)
         {
-            var mod = id % 4;
+            var mod = id % 3; //doe zomaar wat voor names :)
 
-            if (mod < 10)
+            if (mod == 0)
             {
                 return $"Janssen { _random.Next(10000)}";
             }
-            else if (mod > 10 && mod < 100)
+            else if (mod > 1 && mod < 2)
+            {
+                return $"Jackson { _random.Next(10000)}";
+            }
+            else if (mod > 2 && mod < 3)
             {
                 return $"Steur { _random.Next(10000)}";
             }
             else
             {
-                return $"De vries { _random.Next(10000)}";
+                return $"De Vries { _random.Next(10000)}";
             }
         }
+
         /// <summary>
         /// Needed so the VsTest engine can deliver a reader as well; fix for CI
         /// </summary>
