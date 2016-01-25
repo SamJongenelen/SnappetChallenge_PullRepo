@@ -7,7 +7,20 @@ namespace WebApplication1.Controllers
 {
     public class StudentsController : Controller
     {
-        //[Route("students")] //todo: annotation routes zijn sjiek later ff naar kijken
+        private SnappetContext _context;
+        protected SnappetContext Context
+        {
+            get
+            {
+                if (_context == null)
+                {
+                    _context = new SnappetContext();
+                }
+                return _context;
+            }
+        }
+
+        //[Route("students")] //todo: annotation routes zijn sjiek later configureren if needed
         public ActionResult Index()
         {
             //todo: add service which gets the data for model? even better would be client js framework to get from REST service
@@ -18,11 +31,8 @@ namespace WebApplication1.Controllers
         //todo: refactor to service
         private StudentsModel GetStudents()
         {
-            using (var context = new SnappetContext())
-            {
-                var studentLIst = context.Students.ToList();
-                return new StudentsModel(studentLIst);
-            }
+            var studentList = Context.Students.ToList();
+            return new StudentsModel(studentList);
         }
     }
 }

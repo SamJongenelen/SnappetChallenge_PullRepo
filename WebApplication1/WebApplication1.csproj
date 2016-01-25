@@ -245,7 +245,6 @@
     </Compile>
     <Compile Include="Models\DataTableResult.cs" />
     <Compile Include="Models\Progress\Progress.cs" />
-    <Compile Include="Models\Progress\ProgressCollection.cs" />
     <Compile Include="Models\StudentsModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Service\Progression.cs" />

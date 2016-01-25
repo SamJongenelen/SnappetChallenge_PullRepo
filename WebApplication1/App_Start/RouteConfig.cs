@@ -11,16 +11,16 @@ namespace WebApplication1
 
             //default route to students, thats where we wanna be for demo
             routes.MapRoute(
-                name: "Default",
-                url: "{controller}/{action}/{id}",
-                defaults: new { controller = "Students", action = "Index", id = UrlParameter.Optional }
-            );
+           name: "Progression",
+           url: "{controller}/{action}/",
+           defaults: new { controller = "Progression", action = "Index" }
+             );
 
             routes.MapRoute(
-             name: "Progression",
-             url: "{controller}/{action}/",
-             defaults: new { controller = "Progression", action = "Index" }
-         );
+                name: "Students",
+                url: "{controller}/{action}/",
+                defaults: new { controller = "Students" }
+             );
 
             routes.MapMvcAttributeRoutes();
         }

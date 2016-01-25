@@ -8,6 +8,5 @@ namespace WebApplication1.Models
         public int iTotalRecords { get; set; }
         public int iTotalDisplayRecords { get; set; }
         public List<T> aaData { get; set; }
-        //public IList<T> aaData { get; set; }
     }
 }
